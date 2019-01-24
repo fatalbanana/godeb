@@ -234,7 +234,11 @@ func translateTarball(now time.Time, tarball io.Reader) (dataTarGz, md5sums []by
 			}
 		}
 		if !strings.HasPrefix(h.Name, "go/") {
-			return nil, nil, 0, fmt.Errorf("upstream tarball has file in unexpected path: %s", h.Name)
+			if !strings.HasPrefix(h.Name, "gocache/") && !strings.HasPrefix(h.Name, "tmp/") {
+				return nil, nil, 0, fmt.Errorf("upstream tarball has file in unexpected path: %s", h.Name)
+			} else {
+				continue
+			}
 		}
 		const prefix = "./usr/local/"
 		h.Name = prefix + h.Name
